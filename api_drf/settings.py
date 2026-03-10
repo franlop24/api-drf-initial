@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -81,13 +82,20 @@ MIDDLEWARE = [
 
 SITE_ID = 1
 
+REST_USE_JWT = True
+
+JWT_AUTH_COOKIE = None
+JWT_AUTH_REFRESH_COOKIE = None
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         #'rest_framework.authentication.TokenAuthentication',
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # Puedes dejar SessionAuthentication para navegar el browsable API de DRF
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }
-
 
 REST_AUTH = {
     'USE_JWT': True,
@@ -96,6 +104,12 @@ REST_AUTH = {
     'JWT_AUTH_HTTPONLY': True,
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'AUTH_HEADER_TYPES': ('Bearer',), # Aquí defines el prefijo "Bearer"
+}
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Change to 'mandatory' for production
 
